@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6 Tahun Kita - Di Akhir Perang</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #ffb7b2; --bg-dark: #1a1a1a; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: var(--bg-dark); font-family: 'Quicksand', sans-serif; }
+        
+        /* Background Gelap Elegan */
+        #canvas { position: fixed; width: 100%; height: 100%; background: linear-gradient(135deg, #1a0f0f 0%, #000000 100%); z-index: 1; }
+
+        /* Layar Pembuka */
+        #overlay {
+            position: fixed; width: 100%; height: 100%; background: #fffafa; z-index: 2000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 1.5s;
+        }
+        .start-btn {
+            padding: 15px 40px; border: 2.5px solid #7a635a; background: none;
+            color: #7a635a; font-weight: bold; cursor: pointer; border-radius: 50px;
+            font-size: 1.2rem; transition: 0.5s; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .start-btn:hover { background: #7a635a; color: white; transform: scale(1.1); }
+
+        /* Container Utama */
+        .main-container {
+            position: relative; z-index: 100; height: 100vh;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; transition: 2s; text-align: center;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px);
+            padding: 40px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
+            width: 85%; max-width: 450px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        h1 { font-family: 'Dancing Script', cursive; font-size: 3.2rem; color: var(--accent); margin: 0; text-shadow: 0 0 15px rgba(255,183,178,0.6); }
+        .typing-area { font-size: 1.1rem; line-height: 1.8; color: #eee; margin: 20px 0; min-height: 150px; font-weight: 300; }
+
+        /* Animasi Rame (Partikel) */
+        .drop { position: fixed; top: -10%; pointer-events: none; animation: fall linear forwards; z-index: 50; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+        /* Visualizer Musik Aktif */
+        .viz-box { display: flex; align-items: flex-end; gap: 4px; height: 40px; justify-content: center; margin-top: 20px; }
+        .bar { width: 5px; background: var(--accent); border-radius: 10px; animation: wave 0.6s infinite ease-in-out alternate; }
+        @keyframes wave { from { height: 4px; } to { height: 35px; } }
+    </style>
+</head>
+<body>
+
+    <div id="overlay">
+        <p style="letter-spacing: 5px; color: #7a635a; margin-bottom: 5px;">2,190 HARI & SELAMANYA</p>
+        <h2 style="font-family: 'Dancing Script'; font-size: 2.8rem; color: #7a635a; margin-top: 0;">Di Akhir Perang...</h2>
+        <button class="start-btn" onclick="initiate()">Buka Pesan Ini</button>
+    </div>
+
+    <div id="canvas"></div>
+
+    <div class="main-container" id="mainView">
+        <div class="glass-card">
+            <h1>6 Tahun Kita</h1>
+            <div id="textDest" class="typing-area"></div>
+            <div class="viz-box">
+                <div class="bar" style="animation-delay: 0.1s"></div>
+                <div class="bar" style="animation-delay: 0.3s"></div>
+                <div class="bar" style="animation-delay: 0.2s"></div>
+                <div class="bar" style="animation-delay: 0.5s"></div>
+                <div class="bar" style="animation-delay: 0.4s"></div>
+            </div>
+        </div>
+        <p style="color: var(--accent); margin-top: 30px; font-size: 0.8rem; letter-spacing: 3px; font-weight: bold;">I LOVE YOU FOREVER</p>
+    </div>
+
+    <audio id="musik" loop>
+        <source src="https://drive.google.com/uc?id=1PjCsZbJVlwG3W-U6_TOQxYWC5-QU1i1w" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const story = [
+            "Hi Ayangg...",
+            "6 tahun bukan waktu yang singkat untuk kita.",
+            "Sudah banyak badai yang kita lewati,",
+            "tapi kamu tetap jadi alasan aku bertahan.",
+            "terimakasih sudah menjadi rumah...",
+            "terimakasih sudah membuatku merasa pulang,",
+            "aku akan selalu pulang ke arahmu.",
+            "Terima kasih sudah bertahan. lov u ❤️"
+        ];
+
+        let lineIdx = 0; let charIdx = 0;
+
+        function initiate() {
+            document.getElementById('overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('mainView').style.opacity = '1';
+                
+                // Memutar musik
+                const audio = document.getElementById('musik');
+                audio.play().catch(e => console.log("Audio play failed", e));
+                
+                startType();
+            }, 1000);
+            
+            // Membuat partikel rame (Bunga & Hati)
+            setInterval(createDrop, 150);
+        }
+
+        function startType() {
+            if (lineIdx < story.length) {
+                let current = story[lineIdx];
+                if (charIdx < current.length) {
+                    document.getElementById('textDest').innerHTML += current.charAt(charIdx);
+                    charIdx++;
+                    setTimeout(startType, 65);
+                } else {
+                    document.getElementById('textDest').innerHTML += "<br>";
+                    charIdx = 0; lineIdx++;
+                    setTimeout(startType, 1200);
+                }
+            }
+        }
+
+        function createDrop() {
+            const d = document.createElement('div');
+            d.classList.add('drop');
+            // Menambah variasi partikel biar rame
+            d.innerHTML = ['🌸', '❤️', '✨', '💖', '☁️', '🌷'][Math.floor(Math.random() * 6)];
+            d.style.left = Math.random() * 100 + "vw";
+            d.style.fontSize = (Math.random() * 20 + 15) + "px";
+            d.style.animationDuration = (Math.random() * 3 + 2) + "s";
+            d.style.opacity = Math.random();
+            document.body.appendChild(d);
+            setTimeout(() => d.remove(), 5000);
+        }
+    </script>
+</body>
+</html>
